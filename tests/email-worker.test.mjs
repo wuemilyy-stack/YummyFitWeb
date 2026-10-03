@@ -17,7 +17,7 @@ test('worker sends queued messages to the right inboxes and acknowledges outcome
 test('SMTP failure queues a retry and never logs credentials or recipient data',async()=>{
  const logs=[],finished=[];
  const worker=createEmailWorker({url:'https://example.supabase.co',serviceKey:'secret',sendMail:async()=>{throw new Error('SMTP secret person@example.com');},logger:{error:m=>logs.push(m)},fetcher:async(url,options)=>{
-  if(url.endsWith('claim_emails'))return Response.json([{id:'job',attempts:2,payload:{kind:'newsletter',recipient:'person@example.com'}}]);
+  if(url.endsWith('claim_emails'))return Response.json([{id:'job',attempts:2,payload:{kind:'newsletter',recipient:'person@example.com',unsubscribeToken:'11111111-1111-4111-8111-111111111111'}}]);
   finished.push(JSON.parse(options.body));return new Response(null,{status:204});
  }});
  assert.deepEqual(await worker(),{sent:0,failed:1});assert.equal(finished[0].p_sent,false);

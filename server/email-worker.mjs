@@ -10,7 +10,10 @@ export function createEmailWorker({ url, serviceKey, sendMail, fetcher=fetch, lo
     const jobs=await rpc('yummyfit_web_claim_emails');let sent=0,failed=0;
     for(const job of jobs) {
       try {
-        const message=signupEmail(job.payload);
+        const newsletter=job.payload.kind==='newsletter' && !job.payload.notification;
+        if(newsletter && !job.payload.unsubscribeToken)throw new Error('Missing unsubscribe token');
+        const unsubscribeUrl=newsletter?`${url}/functions/v1/yummyfit-web-api/unsubscribe?token=${encodeURIComponent(job.payload.unsubscribeToken)}`:undefined;
+        const message=signupEmail({...job.payload,unsubscribeUrl});
         await sendMail({...message,from:`YummyFit <${SUPPORT_EMAIL}>`,messageId:`<yummyfit-${job.id}@gmail.com>`});
       } catch {
         failed++;

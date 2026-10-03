@@ -1,4 +1,5 @@
 import { HttpError, requestKey, validateSignup } from './validation.mjs';
+import { handleUnsubscribe } from './unsubscribe.mjs';
 const MAX_BYTES = 8192;
 async function digest(value) {
   const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
@@ -42,9 +43,10 @@ export function createSupabaseHandler({ url, serviceKey, origins, fetcher = fetc
         'Access-Control-Allow-Headers': 'Content-Type,Idempotency-Key', 'Access-Control-Max-Age': '600' } : {}) };
     const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers });
     try {
-      if (origin && !allowed.has(origin)) throw new HttpError(403, 'ORIGIN_NOT_ALLOWED', 'This origin is not allowed.');
-      if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
       const pathname = new URL(request.url).pathname.replace(/^\/(?:functions\/v1\/)?yummyfit-web-api(?=\/|$)/, '');
+      if (origin && !allowed.has(origin) && !(pathname === '/unsubscribe' && origin === new URL(request.url).origin)) throw new HttpError(403, 'ORIGIN_NOT_ALLOWED', 'This origin is not allowed.');
+      if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
+      if (pathname === '/unsubscribe') return handleUnsubscribe(request,rpc);
       if (request.method === 'GET' && pathname === '/health/live') return json({ status: 'ok' });
       if (request.method === 'GET' && pathname === '/health/ready') {
         await rpc('yummyfit_web_ready', {}); return json({ status: 'ready' });

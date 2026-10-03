@@ -28,6 +28,7 @@ test('Supabase SQL transaction, concurrency, consent, rate limit and private acc
     await pool.query(readFileSync(new URL('../supabase/migrations/20261003000300_signup_email_outbox.sql', import.meta.url), 'utf8'));
     await pool.query(readFileSync(new URL('../supabase/migrations/20261003000400_restore_optional_price.sql', import.meta.url), 'utf8'));
     await pool.query(readFileSync(new URL('../supabase/migrations/20261003000500_ensure_signup_welcome.sql', import.meta.url), 'utf8'));
+    await pool.query(readFileSync(new URL('../supabase/migrations/20261003000600_newsletter_unsubscribe.sql', import.meta.url), 'utf8'));
     const key = randomUUID();
     const receipts = await Promise.all(Array.from({ length: 8 }, () => capture(key)));
     assert.equal(new Set(receipts.map(result => result.id)).size, 1);
@@ -65,6 +66,14 @@ test('Supabase SQL transaction, concurrency, consent, rate limit and private acc
     assert.equal(new Set(jobs.map(j=>j.id)).size,jobs.length);
     for(const job of jobs) await pool.query('SELECT public.yummyfit_web_finish_email($1,$2,true)',[job.id,job.attempts]);
     assert.equal((await pool.query("SELECT id FROM yummyfit_web.email_outbox WHERE recipient=$1 AND state='sent'",[email])).rows.length,4);
+    const subscription=(await pool.query('SELECT unsubscribe_token FROM yummyfit_web.newsletter_subscriptions WHERE email=$1',[email])).rows[0];
+    await pool.query("UPDATE yummyfit_web.email_outbox SET state='pending' WHERE recipient=$1 AND signup_kind='newsletter' AND notification=false",[email]);
+    await pool.query('SELECT public.yummyfit_web_unsubscribe($1)',[subscription.unsubscribe_token]);
+    await pool.query('SELECT public.yummyfit_web_unsubscribe($1)',[subscription.unsubscribe_token]);
+    assert.ok((await pool.query('SELECT unsubscribed_at FROM yummyfit_web.newsletter_subscriptions WHERE email=$1',[email])).rows[0].unsubscribed_at);
+    assert.equal((await pool.query("SELECT state FROM yummyfit_web.email_outbox WHERE recipient=$1 AND signup_kind='newsletter' AND notification=false",[email])).rows[0].state,'cancelled');
+    assert.equal((await pool.query('SELECT id FROM yummyfit_web.waitlist_intakes WHERE email=$1',[email])).rows.length,1);
+    assert.equal((await pool.query("SELECT has_function_privilege('anon','public.yummyfit_web_unsubscribe(uuid)','EXECUTE') AS allowed")).rows[0].allowed,false);
   } finally {
     await pool.query('DELETE FROM yummyfit_web.email_outbox WHERE recipient=$1', [email]).catch(() => {});
     await pool.query('DELETE FROM yummyfit_web.waitlist_intakes WHERE email=$1', [email]).catch(() => {});

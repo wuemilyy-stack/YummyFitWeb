@@ -21,3 +21,7 @@ This Gmail workflow applies to the Supabase deployment. The local Express server
 The protected worker also supports POST ?check=smtp to verify connectivity/authentication without sending a message. It reports only a sanitized error category and numeric SMTP status. EAUTH / 535 means Gmail rejected the account credential; replace GMAIL_APP_PASSWORD with an app password belonging to the configured sender account.
 
 Provider references: https://support.google.com/accounts/answer/185833 and https://github.com/supabase/supabase/blob/master/examples/edge-functions/supabase/functions/send-email-smtp/index.ts
+
+## Newsletter unsubscribe
+
+Newsletter confirmations include an unsubscribe clause in HTML and plain text, plus List-Unsubscribe headers. Each subscriber has an unguessable private token. GET displays a confirmation page and does not revoke consent; POST records unsubscribed_at and cancels pending newsletter messages. Repeated requests are safe. Waitlist entries remain intact. Future newsletter campaign queries must require marketing_consent=true AND unsubscribed_at IS NULL. Do not use historical marketing_consent alone: it records the original consent, while unsubscribed_at records withdrawal. Individual messages already accepted by SMTP cannot be recalled.
