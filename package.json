@@ -7,7 +7,7 @@
     "dev:web": "vite",
     "dev:api": "node --env-file-if-exists=.env server/index.mjs",
     "build": "tsc --noEmit && tsc -p tsconfig.node.json --noEmit && vite build",
-    "build:edge": "esbuild supabase/functions/yummyfit-web-api/index.ts --bundle --platform=neutral --format=esm --outfile=var/supabase-edge.ts",
+    "build:edge": "esbuild supabase/functions/yummyfit-web-api/index.ts --bundle --platform=neutral --format=esm --external:npm:* --outfile=var/supabase-edge.ts",
     "start": "node --env-file-if-exists=.env server/index.mjs",
     "preview": "vite preview",
     "db:migrate": "node --env-file-if-exists=.env scripts/migrate.mjs",

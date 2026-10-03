@@ -22,7 +22,7 @@ async function readBody(request) {
   try { return JSON.parse(new TextDecoder().decode(bytes)); }
   catch { throw new HttpError(400, 'INVALID_JSON', 'Invalid JSON.'); }
 }
-export function createSupabaseHandler({ url, serviceKey, origins, fetcher = fetch }) {
+export function createSupabaseHandler({ url, serviceKey, origins, fetcher = fetch, onCapture }) {
   const allowed = new Set(origins);
   async function rpc(name, body) {
     if (!url || !serviceKey) throw new Error('Missing server configuration');
@@ -62,6 +62,8 @@ export function createSupabaseHandler({ url, serviceKey, origins, fetcher = fetc
       if (result.error === 'RATE_LIMITED') throw new HttpError(429, 'RATE_LIMITED', 'Too many requests. Please try again later.');
       if (result.error === 'REQUEST_CONFLICT') throw new HttpError(409, 'REQUEST_CONFLICT', 'This request key was already used for different details.');
       if (result.status !== 'accepted' || typeof result.id !== 'string') throw new Error('Invalid database receipt');
+      // Email is queued transactionally; dispatch failure must not turn a saved signup into an error.
+      if (onCapture) { try { onCapture(); } catch { console.error(JSON.stringify({ event: 'email_dispatch_unavailable' })); } }
       return json(result);
     } catch (error) {
       if (error instanceof HttpError) return json({ error: { code: error.code, message: error.message, ...(error.fields ? { fields: error.fields } : {}) } }, error.status);

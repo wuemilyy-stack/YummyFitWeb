@@ -25,11 +25,13 @@ test('Supabase SQL transaction, concurrency, consent, rate limit and private acc
     END $$;`);
     await pool.query(readFileSync(new URL('../supabase/migrations/20261003000100_yummyfit_web.sql', import.meta.url), 'utf8'));
     await pool.query(readFileSync(new URL('../supabase/migrations/20261003000200_optional_price.sql', import.meta.url), 'utf8'));
+    await pool.query(readFileSync(new URL('../supabase/migrations/20261003000300_signup_email_outbox.sql', import.meta.url), 'utf8'));
     const key = randomUUID();
     const receipts = await Promise.all(Array.from({ length: 8 }, () => capture(key)));
     assert.equal(new Set(receipts.map(result => result.id)).size, 1);
     assert.equal((await pool.query('SELECT * FROM yummyfit_web.waitlist_intakes WHERE email=$1', [email])).rows.length, 1);
     assert.equal((await pool.query('SELECT price_range FROM yummyfit_web.waitlist_intakes WHERE email=$1', [email])).rows[0].price_range, null);
+    assert.equal((await pool.query('SELECT id FROM yummyfit_web.email_outbox WHERE recipient=$1', [email])).rows.length, 2);
     assert.equal((await capture(key, { ...payload, name: 'Changed' })).error, 'REQUEST_CONFLICT');
     const badKey = randomUUID();
     await assert.rejects(capture(badKey, { ...payload, priceRange: 'invalid' }));
@@ -47,8 +49,15 @@ test('Supabase SQL transaction, concurrency, consent, rate limit and private acc
       has_function_privilege('service_role','public.yummyfit_web_capture(text,jsonb,uuid,text,text)','EXECUTE') AS server_capture`);
     assert.deepEqual(privileges.rows[0], { schema_access: false, anon_capture: false, user_capture: false, server_capture: true });
     const tables = await pool.query("SELECT relrowsecurity FROM pg_class JOIN pg_namespace ON pg_class.relnamespace=pg_namespace.oid WHERE nspname='yummyfit_web' AND relkind='r'");
-    assert.equal(tables.rows.length, 4); assert.ok(tables.rows.every(table => table.relrowsecurity));
+    assert.equal(tables.rows.length, 5); assert.ok(tables.rows.every(table => table.relrowsecurity));
+    assert.equal((await pool.query('SELECT id FROM yummyfit_web.email_outbox WHERE recipient=$1', [email])).rows.length, 4);
+    const [claimA,claimB]=await Promise.all([pool.query('SELECT * FROM public.yummyfit_web_claim_emails()'),pool.query('SELECT * FROM public.yummyfit_web_claim_emails()')]);
+    const jobs=[...claimA.rows,...claimB.rows];
+    assert.equal(new Set(jobs.map(j=>j.id)).size,jobs.length);
+    for(const job of jobs) await pool.query('SELECT public.yummyfit_web_finish_email($1,$2,true)',[job.id,job.attempts]);
+    assert.equal((await pool.query("SELECT id FROM yummyfit_web.email_outbox WHERE recipient=$1 AND state='sent'",[email])).rows.length,4);
   } finally {
+    await pool.query('DELETE FROM yummyfit_web.email_outbox WHERE recipient=$1', [email]).catch(() => {});
     await pool.query('DELETE FROM yummyfit_web.waitlist_intakes WHERE email=$1', [email]).catch(() => {});
     await pool.query('DELETE FROM yummyfit_web.newsletter_subscriptions WHERE email=$1', [email]).catch(() => {});
     await pool.query('DELETE FROM yummyfit_web.request_receipts WHERE request_key=ANY($1::uuid[])', [keys]).catch(() => {});
