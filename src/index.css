@@ -1,0 +1,146 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-brand: #2f850f;
+    --color-brand-hover: #28513d;
+    --color-brand-dark: #1b4332;
+    --color-text: #162b20;
+    --color-text-muted: #65756a;
+    --color-border: #d7dfd8;
+    --color-bg: #f3f7f1;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-yummy-50 text-yummy-900 font-sans antialiased;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  ::selection {
+    @apply bg-brand-600/30 text-yummy-900;
+  }
+
+  /* Focus styles matching prototype */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-brand-600 ring-offset-2 ring-offset-yummy-50;
+  }
+}
+
+@layer components {
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-padding {
+    @apply py-12 sm:py-16 lg:py-20;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-5 py-3 text-sm font-semibold text-white 
+           bg-brand-600 rounded-btn border-0
+           hover:bg-brand-700 active:bg-brand-800 transition-colors duration-150
+           min-h-[38px] disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-5 py-3 text-sm font-semibold 
+           text-brand-800 bg-white border border-yummy-300 rounded-btn
+           hover:bg-yummy-50 active:bg-yummy-100 transition-colors duration-150
+           min-h-[38px] disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium 
+           text-brand-800 hover:bg-yummy-100 transition-colors duration-150 rounded-btn;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium 
+           text-brand-800 border border-yummy-300 rounded-btn
+           hover:bg-yummy-50 transition-colors duration-150;
+  }
+
+  .card {
+    @apply bg-white rounded-card border border-yummy-200 shadow-card 
+           hover:shadow-card-hover transition-shadow duration-200;
+  }
+
+  .card-hover {
+    @apply transform hover:-translate-y-0.5 transition-transform duration-200;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand-800 to-brand-600 bg-clip-text text-transparent;
+  }
+
+  .section-header {
+    @apply text-center max-w-3xl mx-auto mb-12;
+  }
+
+  .section-title {
+    @apply text-2xl sm:text-3xl lg:text-4xl font-bold text-yummy-900 tracking-tight mb-3;
+  }
+
+  .section-subtitle {
+    @apply text-base text-yummy-600 leading-relaxed;
+  }
+
+  .section-eyebrow {
+    @apply inline-block px-3 py-1 rounded-full bg-yummy-100 text-brand-800 
+           text-eyebrow font-semibold mb-3 uppercase tracking-wider;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 text-yummy-900 bg-white border border-yummy-300 
+           rounded-input transition-colors duration-150
+           placeholder:text-yummy-400
+           focus:outline-none focus:ring-2 focus:ring-brand-600 focus:border-transparent
+           disabled:bg-yummy-100 disabled:text-yummy-500 disabled:cursor-not-allowed;
+  }
+
+  .label-text {
+    @apply block text-sm font-medium text-yummy-800 mb-1.5;
+  }
+
+  .tag {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full 
+           text-xs font-semibold bg-yummy-100 text-brand-800;
+  }
+
+  .grade-badge {
+    @apply inline-flex items-center justify-center px-2 py-1 rounded-input 
+           text-xs font-bold;
+  }
+}
+
+@layer utilities {
+  .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-300 { animation-delay: 300ms; }
+  .animate-delay-400 { animation-delay: 400ms; }
+  .animate-delay-500 { animation-delay: 500ms; }
+  .animate-delay-600 { animation-delay: 600ms; }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-yummy-100;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-yummy-300 rounded-full hover:bg-yummy-400;
+  }
+}

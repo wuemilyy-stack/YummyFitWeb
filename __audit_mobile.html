@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><style>
+  html,body{margin:0;background:#202623;overflow:hidden}
+  .fit{transform:scale(0.7);transform-origin:top left}
+  iframe{border:0;background:#fff}
+</style></head>
+<body>
+  <div class="fit">
+    <iframe id="f" src="/index.html" width="390" height="850"></iframe>
+  </div>
+  <script>
+    document.getElementById('f').addEventListener('load', function () {
+      var d = this.contentDocument;
+      d.documentElement.style.scrollBehavior = 'auto';
+      d.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-visible'); });
+      d.querySelectorAll('[data-count]').forEach(function (el) {
+        var t = parseFloat(el.dataset.count), dec = parseInt(el.dataset.decimals || '0', 10);
+        var v = dec > 0 ? t.toFixed(dec) : Math.round(t).toLocaleString('en-US');
+        el.textContent = v + (el.dataset.suffix || '');
+      });
+      var y = parseInt((location.search.match(/[?&]y=(\d+)/) || [])[1] || '0', 10);
+      if (y) d.defaultView.scrollTo(0, y);
+      document.title = 'audit-ready';
+    });
+  </script>
+</body>
+</html>
