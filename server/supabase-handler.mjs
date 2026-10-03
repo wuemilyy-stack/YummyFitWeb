@@ -44,7 +44,7 @@ export function createSupabaseHandler({ url, serviceKey, origins, fetcher = fetc
     try {
       if (origin && !allowed.has(origin)) throw new HttpError(403, 'ORIGIN_NOT_ALLOWED', 'This origin is not allowed.');
       if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
-      const pathname = new URL(request.url).pathname.replace(/^\/functions\/v1\/yummyfit-web-api/, '');
+      const pathname = new URL(request.url).pathname.replace(/^\/(?:functions\/v1\/)?yummyfit-web-api(?=\/|$)/, '');
       if (request.method === 'GET' && pathname === '/health/live') return json({ status: 'ok' });
       if (request.method === 'GET' && pathname === '/health/ready') {
         await rpc('yummyfit_web_ready', {}); return json({ status: 'ready' });

@@ -33,6 +33,7 @@ test('Edge rejects invalid, oversized and disallowed-origin requests before data
   assert.equal((await handler(request({ email: 'test@example.com', marketingConsent: false, policyVersion: POLICY_VERSION }, {}, '/newsletter'))).status, 422);
 });
 test('Edge handles preflight, readiness, conflicts, rate limits and database failure', async () => {
+  assert.equal((await fixture(async () => {})(new Request('https://edge.runtime/yummyfit-web-api/health/live'))).status, 200);
   assert.equal((await fixture(async () => Response.json({ status: 'ready' }))(new Request(base + '/health/ready'))).status, 200);
   assert.equal((await fixture(async () => {})(new Request(base + '/intakes', { method: 'OPTIONS', headers: { origin: 'https://wuemilyy-stack.github.io' } }))).status, 204);
   for (const [error, status] of [['REQUEST_CONFLICT',409],['RATE_LIMITED',429]]) {

@@ -17,6 +17,7 @@ const email = import.meta.env.VITE_CONTACT_EMAIL?.trim();
 if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('Invalid contact email.');
 export const site = {
   contactEmail: email,
+  contactUrl: 'https://github.com/wuemilyy-stack/YummyFitWeb/issues/new?title=Private%20contact%20request',
   socials: [
     { label: 'GitHub', href: profile(import.meta.env.VITE_GITHUB_URL || 'https://github.com/wuemilyy-stack/YummyFitWeb', ['github.com']) },
     { label: 'Instagram', href: profile(import.meta.env.VITE_INSTAGRAM_URL, ['instagram.com', 'www.instagram.com']) },

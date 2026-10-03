@@ -25,7 +25,7 @@ export function Footer() {
           <a href={sitePath('#about')}>About</a><a href={sitePath('#faq')}>FAQ</a></nav>
         <div><h3 className="font-semibold mb-3">Contact</h3>{site.contactEmail
           ? <a href={`mailto:${site.contactEmail}`} className="underline">{site.contactEmail}</a>
-          : <p className="text-yummy-200">A contact channel will be published before public launch.</p>}
+          : <><a href={site.contactUrl} className="underline">Contact the project maintainer</a><p className="text-yummy-200 mt-2 text-sm">Request a private contact channel. Do not post personal signup information in public issues.</p></>}
           <nav aria-label="Legal" className="flex flex-wrap gap-4 mt-4">{legalLinks.map(link => <a key={link.href} href={link.href}>{link.label}</a>)}</nav>
         </div>
       </div>

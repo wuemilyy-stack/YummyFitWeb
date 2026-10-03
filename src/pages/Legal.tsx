@@ -30,7 +30,7 @@ export function Legal({ page }: { page: keyof typeof content }) {
     {document.sections.map(([heading, text]) => <section key={heading} className="mb-6"><h2 className="text-xl font-semibold mb-2">{heading}</h2><p>{text}</p></section>)}
     <h2 className="text-xl font-semibold mb-2">Contact</h2>
     {site.contactEmail ? <p>Contact <a className="underline" href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a> with questions or privacy requests.</p>
-      : <p>A contact channel will be published before public launch.</p>}
+      : <p><a className="underline" href={site.contactUrl}>Request private contact with the project maintainer</a> for support or privacy requests. Do not post personal signup information in public issues.</p>}
     <a className="btn-secondary mt-8" href={sitePath()}>Return to YummyFit</a>
   </main><Footer /></>;
 }

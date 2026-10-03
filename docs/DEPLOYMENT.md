@@ -2,7 +2,7 @@
 
 Use Node 24. The supported production topology is the Node application serving built dist/ and the same-origin API, with PostgreSQL for multiple instances. Local development uses a real, persistent SQLite file.
 
-1. Copy .env.example to .env and supply DATABASE_URL and VITE_CONTACT_EMAIL. Use a real operational mailbox. Optional social profiles remain hidden unless configured. Run npm run check:deployment to validate the contact domain's MX records.
+1. Copy .env.example to .env and supply DATABASE_URL. Optional VITE_CONTACT_EMAIL must be a real operational mailbox; otherwise the maintainer issue page provides the contact destination, with a warning against public personal information. Optional social profiles remain hidden unless configured. Run npm run check:deployment to validate the contact destination or mailbox MX records.
 2. Review the included privacy/terms/cookies copy against the actual operator, hosting providers, retention practices, and planned launch. These are initial policy documents, not a legal sign-off.
 3. Run npm ci, npm run check, npm run build, and npm run db:migrate.
 4. Use a dedicated runtime PostgreSQL role with CONNECT, schema USAGE, SELECT/INSERT on waitlist_intakes, newsletter_subscriptions and request_receipts, and SELECT on schema_migrations. Apply migrations with a separate schema owner. No public list/update endpoint exists. Updates, deletion and opt-out requests require verification by the operator before a privileged database change.

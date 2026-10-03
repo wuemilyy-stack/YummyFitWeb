@@ -17,7 +17,7 @@ The API base is `https://YOUR_PROJECT_REF.supabase.co/functions/v1/yummyfit-web-
 Set these non-secret repository Actions variables:
 
 - `VITE_API_BASE_URL`: the deployed Supabase API base above.
-- `VITE_CONTACT_EMAIL`: a real operational privacy/support mailbox.
+- `VITE_CONTACT_EMAIL`: optional real operational mailbox. When unset, the site links to the repository maintainer contact page and instructs visitors to keep personal information out of public issues.
 
 Enable GitHub Pages with source GitHub Actions. The Pages workflow builds with `/YummyFitWeb/` as its base and creates physical privacy/terms/cookies documents plus a deliberate 404 document. It runs on master pushes or manual workflow dispatch. GitHub Pages supplies HTTPS. Review the initial policy copy before public launch.
 
