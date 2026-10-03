@@ -13,6 +13,7 @@ import { Waitlist } from '@/components/sections/Waitlist';
 import { AboutFaq } from '@/components/sections/AboutFaq';
 import { Footer } from '@/components/sections/Footer';
 import { Legal } from '@/pages/Legal';
+import { Unsubscribe } from '@/pages/Unsubscribe';
 import { sitePath } from '@/config/site';
 function Home() {
   return <><Hero /><main><Problem /><Solution /><ProductGlimpses /><Differentiator /><Audience />
@@ -38,7 +39,7 @@ function App() {
   return <MotionConfig reducedMotion="user"><BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '') || '/'}>
     <HashNavigation /><Routes><Route path="/" element={<Home />} /><Route path="/privacy" element={<Legal page="privacy" />} />
       <Route path="/terms" element={<Legal page="terms" />} /><Route path="/cookies" element={<Legal page="cookies" />} />
-      <Route path="*" element={<NotFound />} /></Routes>
+      <Route path="/unsubscribe" element={<Unsubscribe />} /><Route path="*" element={<NotFound />} /></Routes>
   </BrowserRouter></MotionConfig>;
 }
 export default App;

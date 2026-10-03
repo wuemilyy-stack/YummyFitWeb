@@ -12,8 +12,8 @@ test('newsletter email includes a working clause in HTML, plain text and mail he
 });
 test('GET confirms without changing preferences; POST performs unsubscribe',async()=>{
  let calls=0;const rpc=async(name,args)=>{assert.equal(name,'yummyfit_web_unsubscribe');assert.ok(args.p_token);calls++;};
- const get=await handleUnsubscribe(new Request(link),rpc);assert.equal(get.status,200);assert.equal(calls,0);
- assert.ok((await get.text()).includes('method="post"'));
+ const get=await handleUnsubscribe(new Request(link),rpc);assert.equal(get.status,302);assert.equal(calls,0);
+ assert.ok(get.headers.get('location').includes('/YummyFitWeb/unsubscribe?token='));
  assert.equal((await handleUnsubscribe(new Request(link,{method:'POST'}),rpc)).status,200);assert.equal(calls,1);
  assert.equal((await handleUnsubscribe(new Request(link,{method:'POST'}),rpc)).status,200);
 });

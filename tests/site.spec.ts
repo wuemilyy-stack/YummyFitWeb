@@ -1,6 +1,22 @@
 import { test, expect } from '@playwright/test';
 const base = process.env.E2E_SITE_BASE || '/';
 const path = (value = '') => base + value;
+test('unsubscribe deep link requires confirmation and survives reload',async({page})=>{
+  let posts=0;
+  await page.route('**/api/unsubscribe?*',async route=>{posts++;expect(route.request().method()).toBe('POST');await route.fulfill({status:200,body:'Unsubscribed'});});
+  await page.goto(path('unsubscribe?token=11111111-1111-4111-8111-111111111111'));
+  await expect(page.getByRole('heading',{name:'Unsubscribe from YummyFit newsletters'})).toBeVisible();
+  await page.reload();expect(posts).toBe(0);
+  await page.getByRole('button',{name:'Unsubscribe',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'You’re unsubscribed'})).toBeVisible();expect(posts).toBe(1);
+});
+test('unsubscribe failure stays actionable and invalid links cannot submit',async({page})=>{
+  await page.route('**/api/unsubscribe?*',route=>route.fulfill({status:503,body:'Unavailable'}));
+  await page.goto(path('unsubscribe?token=11111111-1111-4111-8111-111111111111'));
+  await page.getByRole('button',{name:'Unsubscribe',exact:true}).click();
+  await expect(page.getByRole('alert')).toBeVisible();await expect(page.getByRole('button',{name:'Unsubscribe',exact:true})).toBeEnabled();
+  await page.goto(path('unsubscribe?token=bad'));await expect(page.getByRole('heading',{name:'Invalid unsubscribe link'})).toBeVisible();await expect(page.getByRole('button')).toHaveCount(0);
+});
 test('all rendered internal links target existing sections or distinct pages', async ({ page, request }, testInfo) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));

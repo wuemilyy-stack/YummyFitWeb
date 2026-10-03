@@ -8,4 +8,4 @@ export const PRICE_OPTIONS = [
 export const PLANS = ['free', 'premium', 'founding'] as const;
 export type Plan = typeof PLANS[number];
 export type PriceRange = typeof PRICE_OPTIONS[number]['value'];
-export const PAGE_PATHS = ['/', '/privacy', '/terms', '/cookies'] as const;
+export const PAGE_PATHS = ['/', '/privacy', '/terms', '/cookies', '/unsubscribe'] as const;
