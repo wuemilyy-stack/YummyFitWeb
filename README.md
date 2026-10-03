@@ -37,6 +37,7 @@ Browser tests start a production-style local Node server with a disposable SQLit
 If the browser download is unavailable locally, use installed Chrome with PLAYWRIGHT_CHANNEL=chrome (PowerShell: $env:PLAYWRIGHT_CHANNEL='chrome'). CI uses Playwright's bundled Chromium.
 
 ## Deployment
+For Supabase plus GitHub Pages, see docs/SUPABASE-PAGES.md.
 See docs/DEPLOYMENT.md for database roles, TLS, contact configuration, migrations, readiness, base paths, privacy operations, and static-host limitations. Never expose DATABASE_URL in VITE_* variables. Before public deployment:
 ```sh
 npm run check:deployment
