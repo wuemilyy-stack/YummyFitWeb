@@ -71,7 +71,7 @@ const plans = [
     color: 'brand-600',
     bgColor: 'yummy-100',
     icon: Crown,
-    badge: 'Limited to 500',
+    badge: 'Limited to 50',
   },
 ];
 
@@ -157,22 +157,18 @@ function PricingCard({ plan, index, isVisible }: { plan: typeof plans[0]; index:
     >
       {/* Highlight badge */}
       {plan.badge && (
-        <motion.div
-          className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full text-xs font-bold text-white"
-          style={{ background: `linear-gradient(135deg, ${plan.color}, ${plan.color}dd)` }}
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ delay: 0.4 + index * 0.06, type: 'spring', stiffness: 200 }}
+        <div
+          className="absolute top-3 left-1/2 -translate-x-1/2 z-20 w-max max-w-[calc(100%-1.5rem)] whitespace-nowrap rounded-full border border-brand-200 bg-brand-100 px-3 py-1 text-xs leading-none font-bold text-brand-600"
         >
           {plan.badge}
-        </motion.div>
+        </div>
       )}
 
       {/* Top accent */}
       <div className="absolute top-0 left-0 right-0 h-1 rounded-t-card" style={{ background: `linear-gradient(135deg, ${plan.color}, ${plan.color}dd)` }} />
 
       {/* Header */}
-      <div className="relative z-10 text-center mb-5">
+      <div className="relative z-10 text-center mb-5 pt-7">
         <motion.div
           className={cn('w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3', `bg-${plan.bgColor} text-${plan.color} border border-yummy-200`)}
           initial={{ scale: 0, rotate: -180 }}
