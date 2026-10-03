@@ -7,7 +7,7 @@ Deno.serve(async request=>{
   if(new URL(request.url).searchParams.get('check')==='smtp') {
     const transport=gmailTransport();
     try {await transport.verify();return Response.json({smtp:'ready'});}
-    catch(error) {return Response.json({smtp:'unavailable',code:['EAUTH','ECONNECTION','ETIMEDOUT','ESOCKET'].includes(error.code)?error.code:'SMTP_ERROR',smtpStatus:Number.isInteger(error.responseCode)?error.responseCode:undefined},{status:503});}
+    catch(error) {return Response.json({smtp:'unavailable',code:['EAUTH','ECONNECTION','ETIMEDOUT','ESOCKET'].includes(error.code)?error.code:'SMTP_ERROR',smtpStatus:Number.isInteger(error.responseCode)?error.responseCode:undefined,appPasswordFormatValid:/^[a-z]{16}$/i.test((Deno.env.get('GMAIL_APP_PASSWORD')||'').replace(/\s/g,''))},{status:503});}
     finally {transport.close();}
   }
   try{return Response.json(await gmailWorker()());}
