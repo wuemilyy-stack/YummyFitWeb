@@ -22,3 +22,7 @@ Supabase GitHub integration was already enabled when the project became availabl
 The private email outbox, Gmail worker and background dispatch are deployed. A one-minute cron job invokes the JWT-protected worker with a separate private token; both scheduling credentials are stored in Vault. Public API readiness returns 200. Live schema drift had removed price_range, so migration 004 restored it as nullable to keep the capture RPC working without restoring the form question.
 
 The delivery test created two jobs addressed to yummyfitsupport@gmail.com: a subscriber welcome and a support notification. Gmail authentication returned EAUTH / 535. Neither email was delivered; the jobs remain eligible for retry. Replace GMAIL_APP_PASSWORD with an app password for that exact Gmail account, verify the protected ?check=smtp endpoint, then inspect queue sent status and the inbox before claiming email delivery is enabled.
+
+### Gmail activation verified — October 3, 2026
+
+After correcting the app password, the protected SMTP check returned ready (200). The signup API was redeployed to reload the credential. Both queued delivery-test jobs for yummyfitsupport@gmail.com are now sent: one welcome confirmation and one support notification. This verifies Gmail SMTP acceptance, not inbox placement. The one-minute retry schedule remains active.
