@@ -4,14 +4,13 @@ import { useSignup } from '@/hooks/useSignup';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { sitePath } from '@/config/site';
-import { PRICE_OPTIONS, PLANS, type Plan, type PriceRange } from '../../../shared/contracts';
+import { PLANS, type Plan } from '../../../shared/contracts';
 
 export function Waitlist() {
   const selected = new URLSearchParams(window.location.search).get('plan');
   const [plan, setPlan] = useState<Plan | ''>(PLANS.includes(selected as Plan) ? selected as Plan : '');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [price, setPrice] = useState<PriceRange | ''>('');
   const [marketing, setMarketing] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { pending, saved, error, submit } = useSignup('intakes');
@@ -20,10 +19,9 @@ export function Waitlist() {
     const next: Record<string, string> = {};
     if (!name.trim() || name.trim().length > 120) next.name = 'Enter a name of 1–120 characters.';
     if (email.trim().length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) next.email = 'Enter a valid email.';
-    if (!price) next.price = 'Please select a price range.';
     setErrors(next);
     if (Object.keys(next).length || pending) return;
-    await submit({ name: name.trim(), email: email.trim().toLowerCase(), priceRange: price, selectedPlan: plan || null, marketingConsent: marketing });
+    await submit({ name: name.trim(), email: email.trim().toLowerCase(), selectedPlan: plan || null, marketingConsent: marketing });
   }
   return <section id="waitlist" tabIndex={-1} className="section-padding bg-brand-800 text-white">
     <div className="container-custom max-w-2xl">
@@ -38,13 +36,6 @@ export function Waitlist() {
           <fieldset disabled={pending} className="space-y-5">
             <Input id="waitlist-name" name="name" label="Name" labelClassName="text-white" autoComplete="name" required maxLength={120} value={name} onChange={e => setName(e.target.value)} error={errors.name} />
             <Input id="waitlist-email" name="email" label="Email" labelClassName="text-white" type="email" autoComplete="email" required maxLength={254} value={email} onChange={e => setEmail(e.target.value)} error={errors.email} />
-            <fieldset aria-describedby={errors.price ? 'price-error' : undefined}>
-              <legend className="font-medium mb-2 text-white">How much would you pay per month?</legend>
-              <div className="grid grid-cols-2 gap-3">{PRICE_OPTIONS.map(option => <label key={option.value} className="flex items-center gap-2 rounded-input border border-white/30 p-3 cursor-pointer">
-                <input type="radio" name="priceRange" value={option.value} checked={price === option.value} onChange={() => setPrice(option.value)} required />{option.label}
-              </label>)}</div>
-              {errors.price && <p id="price-error" role="alert" className="mt-2 text-red-200">{errors.price}</p>}
-            </fieldset>
             <label className="block font-medium text-white">Membership interest
               <select name="selectedPlan" value={plan} onChange={e => setPlan(e.target.value as Plan | '')} className="input-field mt-2">
                 <option value="">Still exploring</option><option value="free">Free</option><option value="premium">Premium</option><option value="founding">Founding Member</option>

@@ -9,7 +9,7 @@ test('Supabase SQL transaction, concurrency, consent, rate limit and private acc
   const keys = []; const suffix = randomUUID();
   const email = `supabase-test-${suffix}@example.com`;
   const clientHash = createHash('sha256').update(suffix).digest('hex');
-  const payload = { name: 'Supabase SQL Test', email, priceRange: '10-19', selectedPlan: null, marketingConsent: false, policyVersion: POLICY_VERSION };
+  const payload = { name: 'Supabase SQL Test', email, selectedPlan: null, marketingConsent: false, policyVersion: POLICY_VERSION };
   const hash = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
   const capture = async (key, body = payload, kind = 'intake') => {
     keys.push(key);
@@ -24,10 +24,12 @@ test('Supabase SQL transaction, concurrency, consent, rate limit and private acc
       IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname='service_role') THEN CREATE ROLE service_role; END IF;
     END $$;`);
     await pool.query(readFileSync(new URL('../supabase/migrations/20261003000100_yummyfit_web.sql', import.meta.url), 'utf8'));
+    await pool.query(readFileSync(new URL('../supabase/migrations/20261003000200_optional_price.sql', import.meta.url), 'utf8'));
     const key = randomUUID();
     const receipts = await Promise.all(Array.from({ length: 8 }, () => capture(key)));
     assert.equal(new Set(receipts.map(result => result.id)).size, 1);
     assert.equal((await pool.query('SELECT * FROM yummyfit_web.waitlist_intakes WHERE email=$1', [email])).rows.length, 1);
+    assert.equal((await pool.query('SELECT price_range FROM yummyfit_web.waitlist_intakes WHERE email=$1', [email])).rows[0].price_range, null);
     assert.equal((await capture(key, { ...payload, name: 'Changed' })).error, 'REQUEST_CONFLICT');
     const badKey = randomUUID();
     await assert.rejects(capture(badKey, { ...payload, priceRange: 'invalid' }));

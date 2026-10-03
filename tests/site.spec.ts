@@ -6,7 +6,9 @@ test('all rendered internal links target existing sections or distinct pages', a
   page.on('pageerror', error => errors.push(error.message));
   await page.goto(path());
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-  for (const selector of ['#waitlist h2', 'label[for="waitlist-name"]', 'label[for="waitlist-email"]', '#waitlist legend']) {
+  await expect(page.getByText('How much would you pay per month?', { exact: true })).toHaveCount(0);
+  await expect(page.locator('input[name="priceRange"]')).toHaveCount(0);
+  for (const selector of ['#waitlist h2', 'label[for="waitlist-name"]', 'label[for="waitlist-email"]']) {
     await expect(page.locator(selector)).toHaveCSS('color', 'rgb(255, 255, 255)');
   }
   await expect(page.locator('#waitlist button[type="submit"]')).toHaveCSS('color', 'rgb(20, 61, 43)');
@@ -76,7 +78,6 @@ test('legal deep links and reloads render their own content; unknown routes are 
 async function fillIntake(page: import('@playwright/test').Page) {
   await page.getByLabel('Name', { exact: true }).fill('Browser Test');
   await page.locator('#waitlist-email').fill(`browser-${crypto.randomUUID()}@example.com`);
-  await page.getByRole('radio', { name: '$10-19/mo', exact: true }).check();
 }
 test('valid intake is accepted by the real database-backed API', async ({ page }) => {
   await page.goto(path('?plan=premium#waitlist'));
@@ -90,7 +91,7 @@ test('valid intake is accepted by the real database-backed API', async ({ page }
 test('validation and database outage preserve input and never show success', async ({ page }) => {
   await page.goto(path('#waitlist'));
   await page.locator('#waitlist').getByRole('button', { name: 'Join the Waitlist', exact: true }).click();
-  await expect(page.getByText('Please select a price range.', { exact: true })).toBeVisible();
+  await expect(page.getByText('Enter a name of 1–120 characters.', { exact: true })).toBeVisible();
   await fillIntake(page);
   const before = await page.locator('#waitlist-email').inputValue();
   const keys: string[] = [];

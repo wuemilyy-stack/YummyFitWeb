@@ -23,9 +23,9 @@ export function validateSignup(body, kind) {
   if (kind === 'intake') {
     const name = typeof body.name === 'string' ? body.name.trim() : '';
     if (name.length < 1 || name.length > 120) fields.name = 'Enter a name of 1–120 characters.';
-    if (!PRICE_OPTIONS.some(option => option.value === body.priceRange)) fields.priceRange = 'Select a price range.';
+    if (body.priceRange != null && !PRICE_OPTIONS.some(option => option.value === body.priceRange)) fields.priceRange = 'Select a valid price range.';
     if (body.selectedPlan != null && !PLANS.includes(body.selectedPlan)) fields.selectedPlan = 'Select a valid membership.';
-    Object.assign(data, { name, priceRange: body.priceRange, selectedPlan: body.selectedPlan ?? null });
+    Object.assign(data, { name, priceRange: body.priceRange ?? null, selectedPlan: body.selectedPlan ?? null });
   }
   if (Object.keys(fields).length) throw new HttpError(422, 'INVALID_INPUT', 'Please check your signup details.', fields);
   return data;

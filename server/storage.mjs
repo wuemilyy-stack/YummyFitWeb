@@ -70,10 +70,15 @@ export async function openStorage({ databaseUrl, databaseFile, production = fals
       else await query(migration);
       await query('INSERT INTO schema_migrations(version, applied_at) VALUES ($1, $2) ON CONFLICT (version) DO NOTHING',
         ['001', new Date().toISOString()]);
+      if (!(await query("SELECT version FROM schema_migrations WHERE version = '002'")).rows.length) {
+        if (storage.sqlite) storage.sqlite.exec(readFileSync(new URL('./migrations/002-optional-price-sqlite.sql', import.meta.url), 'utf8'));
+        else await query('ALTER TABLE waitlist_intakes ALTER COLUMN price_range DROP NOT NULL');
+        await query('INSERT INTO schema_migrations(version, applied_at) VALUES ($1, $2)', ['002', new Date().toISOString()]);
+      }
     });
   };
   storage.ready = async () => {
-    const result = await storage.query("SELECT version FROM schema_migrations WHERE version = '001'");
+    const result = await storage.query("SELECT version FROM schema_migrations WHERE version = '002'");
     if (!result.rows.length) throw new Error('Run npm run db:migrate before starting this deployment.');
     await storage.query('SELECT id FROM waitlist_intakes LIMIT 0');
     await storage.query('SELECT id FROM newsletter_subscriptions LIMIT 0');

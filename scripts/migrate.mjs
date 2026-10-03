@@ -4,4 +4,4 @@ const storage = await openStorage({
   production: process.env.NODE_ENV === 'production',
 });
 await storage.close();
-console.log('Database migration 001 applied.');
+console.log('Database migrations through 002 applied.');

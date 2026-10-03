@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
+import { DatabaseSync } from 'node:sqlite';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { tmpdir } from 'node:os';
@@ -32,6 +33,31 @@ async function fixture(t, options = {}) {
   });
   return { base, storage, post, databaseFile };
 }
+
+test('optional-price migration preserves existing answers and can run twice', async () => {
+  const directory = mkdtempSync(join(tmpdir(), 'yummyfit-test-'));
+  const databaseFile = join(directory, 'legacy.sqlite');
+  try {
+    const db = new DatabaseSync(databaseFile);
+    db.exec(readFileSync(new URL('../server/migrations/001-intake.sql', import.meta.url), 'utf8'));
+    db.prepare('INSERT INTO waitlist_intakes VALUES (?,?,?,?,?,?,?,?)').run(randomUUID(), payload.name, payload.email, payload.priceRange, payload.selectedPlan, POLICY_VERSION, 0, new Date().toISOString());
+    db.close();
+    const storage = await openStorage({ databaseFile });
+    try {
+      await storage.migrate();
+      assert.equal((await storage.query('SELECT price_range FROM waitlist_intakes')).rows[0].price_range, '10-19');
+      await storage.capture('intake', { ...payload, email: 'no-price@example.com', priceRange: null }, randomUUID());
+      assert.equal((await storage.query("SELECT price_range FROM waitlist_intakes WHERE email='no-price@example.com'")).rows[0].price_range, null);
+    } finally { await storage.close(); }
+  } finally { rmSync(directory, { recursive: true, force: true }); }
+});
+
+test('intake without a price is stored as unknown, never as an invented answer', async t => {
+  const { storage, post } = await fixture(t);
+  const { priceRange, ...withoutPrice } = payload;
+  assert.equal((await post(withoutPrice)).status, 200);
+  assert.equal((await storage.query('SELECT price_range FROM waitlist_intakes')).rows[0].price_range, null);
+});
 
 test('valid intake is committed, normalized and survives a new database connection', async t => {
   const { storage, post, databaseFile } = await fixture(t);

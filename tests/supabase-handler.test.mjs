@@ -23,6 +23,17 @@ test('Edge validates and normalizes data, forwards only server credentials, and 
   assert.ok(!JSON.stringify(captured).includes('server-only-secret'));
   assert.equal(response.headers.get('access-control-allow-origin'), 'https://wuemilyy-stack.github.io');
 });
+test('Edge accepts signup without a price and forwards null', async () => {
+  let captured;
+  const handler = fixture(async (_url, options) => {
+    captured = JSON.parse(options.body);
+    return Response.json({ id: randomUUID(), status: 'accepted' });
+  });
+  const { priceRange, ...withoutPrice } = payload;
+  assert.equal((await handler(request(withoutPrice))).status, 200);
+  assert.equal(captured.p_payload.priceRange, null);
+});
+
 test('Edge rejects invalid, oversized and disallowed-origin requests before database access', async () => {
   const handler = fixture(async () => { throw new Error('Should not call database'); });
   assert.equal((await handler(request({ ...payload, priceRange: 'invalid' }))).status, 422);
