@@ -9,6 +9,23 @@ const request = (body = payload, extra = {}, path = '/intakes') => new Request(b
   method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': randomUUID(), origin: 'https://wuemilyy-stack.github.io', ...extra }, body: JSON.stringify(body),
 });
 function fixture(fetcher) { return createSupabaseHandler({ url: 'https://example.supabase.co', serviceKey: 'server-only-secret', origins: ['https://wuemilyy-stack.github.io'], fetcher }); }
+test('unsubscribe supports empty database responses and website CORS',async()=>{
+  const handler=fixture(async(url,options)=>{
+    assert.ok(url.endsWith('/rpc/yummyfit_web_unsubscribe'));
+    assert.ok(JSON.parse(options.body).p_token);
+    return new Response(null,{status:204});
+  });
+  const response=await handler(request({}, {}, '/unsubscribe?token=11111111-1111-4111-8111-111111111111'));
+  assert.equal(response.status,200);
+  assert.equal(response.headers.get('Access-Control-Allow-Origin'),'https://wuemilyy-stack.github.io');
+  assert.ok((await response.text()).includes('You’re unsubscribed'));
+});
+test('email-scanner GET redirects to the website without database writes',async()=>{
+  const handler=fixture(async()=>{throw new Error('GET must not call the database');});
+  const response=await handler(new Request(base+'/unsubscribe?token=11111111-1111-4111-8111-111111111111'));
+  assert.equal(response.status,302);
+  assert.ok(response.headers.get('Location').startsWith('https://wuemilyy-stack.github.io/YummyFitWeb/unsubscribe?token='));
+});
 test('Edge validates and normalizes data, forwards only server credentials, and acknowledges a database receipt', async () => {
   let captured;
   const handler = fixture(async (_url, options) => {

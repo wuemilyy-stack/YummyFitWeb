@@ -32,7 +32,8 @@ export function createSupabaseHandler({ url, serviceKey, origins, fetcher = fetc
       body: JSON.stringify(body), signal: AbortSignal.timeout(8000),
     });
     if (!response.ok) throw new Error('Database operation failed');
-    return response.json();
+    const text=await response.text();
+    return text?JSON.parse(text):null;
   }
   return async request => {
     const requestId = crypto.randomUUID();
@@ -46,7 +47,12 @@ export function createSupabaseHandler({ url, serviceKey, origins, fetcher = fetc
       const pathname = new URL(request.url).pathname.replace(/^\/(?:functions\/v1\/)?yummyfit-web-api(?=\/|$)/, '');
       if (origin && !allowed.has(origin) && !(pathname === '/unsubscribe' && origin === new URL(request.url).origin)) throw new HttpError(403, 'ORIGIN_NOT_ALLOWED', 'This origin is not allowed.');
       if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
-      if (pathname === '/unsubscribe') return handleUnsubscribe(request,rpc);
+      if (pathname === '/unsubscribe') {
+        const response=await handleUnsubscribe(request,rpc);
+        if(origin && allowed.has(origin))response.headers.set('Access-Control-Allow-Origin',origin);
+        response.headers.set('Vary','Origin');
+        return response;
+      }
       if (request.method === 'GET' && pathname === '/health/live') return json({ status: 'ok' });
       if (request.method === 'GET' && pathname === '/health/ready') {
         await rpc('yummyfit_web_ready', {}); return json({ status: 'ready' });
