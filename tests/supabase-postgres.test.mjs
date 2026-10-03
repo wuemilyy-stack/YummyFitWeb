@@ -27,11 +27,18 @@ test('Supabase SQL transaction, concurrency, consent, rate limit and private acc
     await pool.query(readFileSync(new URL('../supabase/migrations/20261003000200_optional_price.sql', import.meta.url), 'utf8'));
     await pool.query(readFileSync(new URL('../supabase/migrations/20261003000300_signup_email_outbox.sql', import.meta.url), 'utf8'));
     await pool.query(readFileSync(new URL('../supabase/migrations/20261003000400_restore_optional_price.sql', import.meta.url), 'utf8'));
+    await pool.query(readFileSync(new URL('../supabase/migrations/20261003000500_ensure_signup_welcome.sql', import.meta.url), 'utf8'));
     const key = randomUUID();
     const receipts = await Promise.all(Array.from({ length: 8 }, () => capture(key)));
     assert.equal(new Set(receipts.map(result => result.id)).size, 1);
     assert.equal((await pool.query('SELECT * FROM yummyfit_web.waitlist_intakes WHERE email=$1', [email])).rows.length, 1);
     assert.equal((await pool.query('SELECT price_range FROM yummyfit_web.waitlist_intakes WHERE email=$1', [email])).rows[0].price_range, null);
+    assert.equal((await pool.query('SELECT id FROM yummyfit_web.email_outbox WHERE recipient=$1', [email])).rows.length, 2);
+    // Simulate a signup saved before the email workflow existed, then re-submit.
+    await pool.query('DELETE FROM yummyfit_web.email_outbox WHERE recipient=$1', [email]);
+    await capture(randomUUID());
+    assert.equal((await pool.query('SELECT id FROM yummyfit_web.email_outbox WHERE recipient=$1', [email])).rows.length, 2);
+    await capture(randomUUID());
     assert.equal((await pool.query('SELECT id FROM yummyfit_web.email_outbox WHERE recipient=$1', [email])).rows.length, 2);
     assert.equal((await capture(key, { ...payload, name: 'Changed' })).error, 'REQUEST_CONFLICT');
     const badKey = randomUUID();
@@ -40,7 +47,8 @@ test('Supabase SQL transaction, concurrency, consent, rate limit and private acc
     await assert.rejects(capture(randomUUID(), { email, policyVersion: POLICY_VERSION, marketingConsent: false }, 'newsletter'));
     assert.equal((await capture(randomUUID(), { email, policyVersion: POLICY_VERSION, marketingConsent: true }, 'newsletter')).status, 'accepted');
     // Ten committed calls above; reach the thirty-request limit.
-    for (let index = 0; index < 20; index++) assert.equal((await capture(randomUUID())).status, 'accepted');
+    const used=(await pool.query('SELECT requests FROM yummyfit_web.rate_limits WHERE client_hash=$1 ORDER BY bucket DESC LIMIT 1',[clientHash])).rows[0].requests;
+    for (let index = used; index < 30; index++) assert.equal((await capture(randomUUID())).status, 'accepted');
     const limitedKey = randomUUID();
     assert.equal((await capture(limitedKey)).error, 'RATE_LIMITED');
     assert.equal((await pool.query('SELECT * FROM yummyfit_web.request_receipts WHERE request_key=$1', [limitedKey])).rows.length, 0);
