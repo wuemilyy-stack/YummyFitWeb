@@ -1,43 +1,46 @@
-# YummyFit — Homepage (Pre-Launch)
+# YummyFitWeb
+React/TypeScript pre-launch website with working navigation, legal routes, durable waitlist and newsletter capture, and automated checks.
 
-High-conversion, single-page homepage built from the YummyFit wireframe.
-Static HTML/CSS/JS — no build step required.
-
-## Run it
-
-Open `index.html` directly in a browser, or serve the folder:
-
-```bash
-python -m http.server 4173
-# then visit http://localhost:4173
+## Run locally
+Requires Node 24 (see .nvmrc).
+```sh
+npm ci
+# Copy .env.example to .env if custom configuration is needed.
+npm run dev
 ```
+Open http://127.0.0.1:5173. This starts both Vite and the API on port 3001. The local database persists in var/yummyfit.sqlite. Opening index.html directly or serving the source folder with Python will not run this application.
 
-## Files
+## Build and serve
+```sh
+npm run build
+npm start
+```
+Open http://127.0.0.1:3001. The Node server serves dist/, legal pages, and the API. npm run preview is frontend-only inspection.
 
-| File          | Purpose                                        |
-| ------------- | ---------------------------------------------- |
-| `index.html`  | All 10 sections + inline SVG icon sprite        |
-| `styles.css`  | Design system, layout, animations, responsive   |
-| `script.js`   | Scroll reveals, nav, count-ups, waitlist form   |
-| `assets/`     | Drop `hero.mp4` here (gradient fallback if absent) |
+## Database
+Local SQLite migrations apply automatically in development. PostgreSQL requires a server-only DATABASE_URL and an explicit migration:
+```sh
+npm run db:migrate
+```
+Intake succeeds only after a committed database write. Duplicate emails are accepted without overwriting the original. Newsletter capture requires consent. Confirmation emails are not sent.
 
-## Sections
+## Checks
+```sh
+npm run build
+npm test
+npx playwright install chromium
+npm run test:e2e
+npm audit
+npm run smoke
+```
+Browser tests start a production-style local Node server with a disposable SQLite database. PostgreSQL tests run when TEST_DATABASE_URL points to a disposable test database (CI supplies one). Set E2E_SITE_BASE=/YummyFitWeb/ and build with VITE_SITE_BASE=/YummyFitWeb/ to verify subdirectory hosting.
+If the browser download is unavailable locally, use installed Chrome with PLAYWRIGHT_CHANNEL=chrome (PowerShell: $env:PLAYWRIGHT_CHANNEL='chrome'). CI uses Playwright's bundled Chromium.
 
-1. **Hero** — headline, subheadline, 2 CTAs, animated hub + 4 pillars, micro-trust line
-2. **The Problem** — 3 frustration cards with quotes
-3. **The Solution** — hub → four pillars animation (Fitness / Nutrition / Shopping / Coaching)
-4. **Product Glimpses** — 6 animated mock-UI tiles
-5. **Differentiator** — comparison table with highlighted YummyFit column
-6. **Who It's For** — 4 persona cards
-7. **Social Proof** — count-up stats, tester quotes, press/partner logo placeholders
-8. **Monetization Teaser** — Free / Premium / Founding Member plan cards (no prices)
-9. **Waitlist CTA** — name + email + willingness-to-pay form with success state
-10. **Footer** — About / Privacy / Terms / Contact, socials, © 2026 YummyFit
+## Deployment
+See docs/DEPLOYMENT.md for database roles, TLS, contact configuration, migrations, readiness, base paths, privacy operations, and static-host limitations. Never expose DATABASE_URL in VITE_* variables. Before public deployment:
+```sh
+npm run check:deployment
+```
+Optional social/contact destinations are configured through .env; unavailable profiles are hidden. Frontend variables are baked into the build, so rebuild after changes.
 
-## Notes
-
-- The waitlist form validates client-side and stores submissions in
-  `localStorage` (`yummyfit_waitlist`) as a pre-launch placeholder — wire it to
-  your real endpoint (Formspree, ConvertKit, your API) in `script.js`.
-- Fully responsive (mobile nav included) and honors `prefers-reduced-motion`.
-- Fonts: Plus Jakarta Sans + Inter via Google Fonts.
+The prior static scripts and audit wrappers are archived under archive/legacy/. The active application lives in src/ and server/.

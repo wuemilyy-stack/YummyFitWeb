@@ -1,12 +1,14 @@
 import { motion } from 'framer-motion';
 import { Check, Crown, Sparkles, Gift, Zap } from 'lucide-react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Button } from '@/components/ui/Button';
+import { waitlistPath } from '@/config/site';
+import type { Plan } from '../../../shared/contracts';
 import { cn } from '@/utils/helpers';
 
 const plans = [
   {
     name: 'Free',
+    id: 'free' as Plan,
     description: 'Tracking + basic features',
     price: '$0',
     period: '/month',
@@ -17,7 +19,7 @@ const plans = [
       'Limited recipe library',
       'Barcode scanner (5/day)',
     ],
-    cta: 'Start Free',
+    cta: 'Join Free Waitlist',
     variant: 'secondary' as const,
     highlight: false,
     color: 'yummy-600',
@@ -26,6 +28,7 @@ const plans = [
   },
   {
     name: 'Premium',
+    id: 'premium' as Plan,
     description: 'Personalized plans + coaching + grocery',
     price: '$19',
     period: '/month',
@@ -39,7 +42,7 @@ const plans = [
       'Advanced analytics',
       'Recipe library + meal prep guides',
     ],
-    cta: 'Get Premium',
+    cta: 'Join Premium Waitlist',
     variant: 'primary' as const,
     highlight: true,
     color: 'brand-600',
@@ -49,6 +52,7 @@ const plans = [
   },
   {
     name: 'Founding Member',
+    id: 'founding' as Plan,
     description: 'Lifetime discount + early access + perks',
     price: '$299',
     period: '/lifetime',
@@ -62,7 +66,7 @@ const plans = [
       'Quarterly coaching calls',
       'Lifetime grocery credits ($100/yr)',
     ],
-    cta: 'Reserve Your Spot',
+    cta: 'Register Founding Interest',
     variant: 'primary' as const,
     highlight: true,
     color: 'brand-600',
@@ -79,6 +83,7 @@ export function Monetization() {
     <section
       ref={ref}
       id="pricing"
+      tabIndex={-1}
       className="section-padding bg-white relative overflow-hidden"
     >
       {/* Background pattern */}
@@ -117,7 +122,7 @@ export function Monetization() {
           animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 16 }}
           transition={{ delay: 0.5, duration: 0.4 }}
         >
-          <span className="font-semibold text-yummy-800">Pricing shown is indicative for waitlist members.</span> Final pricing may vary. Founding Member spots are limited to the first 500 members and include lifetime access at a one-time price.
+          <span className="font-semibold text-yummy-800">Pricing and benefits are indicative.</span> Final offers may vary. Joining records your interest and does not purchase or reserve a membership.
         </motion.p>
 
         {/* FAQ Hint */}
@@ -205,14 +210,10 @@ function PricingCard({ plan, index, isVisible }: { plan: typeof plans[0]; index:
       </ul>
 
       {/* CTA */}
-      <Button
-        variant={plan.variant}
-        className="w-full"
-        size="md"
-      >
+      <a href={waitlistPath(plan.id)} className={cn('w-full', plan.variant === 'primary' ? 'btn-primary' : 'btn-secondary')}>
         {plan.cta}
         {plan.highlight && <Crown className="w-4 h-4 ml-1.5" />}
-      </Button>
+      </a>
 
       {/* Founding member extra note */}
       {plan.name === 'Founding Member' && (
@@ -223,7 +224,7 @@ function PricingCard({ plan, index, isVisible }: { plan: typeof plans[0]; index:
           transition={{ delay: 0.7 + index * 0.06 }}
         >
           <Gift className="w-3 h-3 inline mr-1" />
-          One-time payment · Lifetime access · Only 500 spots
+          Express interest · No payment required
         </motion.p>
       )}
     </motion.article>

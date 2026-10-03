@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Zap, Shield, Users } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { waitlistPath } from '@/config/site';
 import { Navigation } from '@/components/ui/Navigation';
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-yummy-50">
+    <section id="top" tabIndex={-1} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-yummy-50">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%232f850f%22 fill-opacity=%220.03%22%3E%3Cpath d=%22M0 38.59L38.59 0H40V1.41L1.41 40H0z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]" />
       
@@ -41,7 +41,7 @@ export function Hero() {
           >
             <span className="flex items-center gap-1.5 text-sm text-yummy-600">
               <Users className="w-4 h-4 text-brand-600" />
-              10,000+ on waitlist
+              Preparing for launch
             </span>
             <span className="flex items-center gap-1.5 text-sm text-yummy-600">
               <Shield className="w-4 h-4 text-brand-600" />
@@ -81,13 +81,13 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.45, duration: 0.5 }}
           >
-            <Button size="lg" className="w-full sm:w-auto group">
+            <a href={waitlistPath()} className="btn-primary w-full sm:w-auto group">
               Join the Waitlist
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </Button>
-            <Button variant="secondary" size="lg" className="w-full sm:w-auto">
+            </a>
+            <a href={waitlistPath('founding')} className="btn-secondary w-full sm:w-auto">
               Become a Founding Member
-            </Button>
+            </a>
           </motion.div>
 
           {/* Micro-trust line */}

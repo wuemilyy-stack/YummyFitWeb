@@ -1,5 +1,11 @@
 # Dependencies
 node_modules/
+var/
+playwright-report/
+test-results/
+*.tsbuildinfo
+.env.*
+!.env.example
 
 # Build output
 dist/

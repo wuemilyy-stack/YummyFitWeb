@@ -65,6 +65,7 @@ export function Audience() {
     <section
       ref={ref}
       id="audience"
+      tabIndex={-1}
       className="section-padding bg-white relative overflow-hidden"
     >
       {/* Background pattern */}
@@ -107,7 +108,7 @@ export function Audience() {
             Don't see yourself here? YummyFit adapts to <span className="font-semibold text-brand-800">your</span> unique journey — whoever you are, wherever you're starting from.
           </p>
           <a href="#waitlist" className="btn-ghost inline-flex items-center gap-1.5 text-sm">
-            See all use cases
+            Join the Waitlist
             <Sparkles className="w-3.5 h-3.5" />
           </a>
         </motion.div>

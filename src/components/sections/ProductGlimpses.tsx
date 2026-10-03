@@ -55,6 +55,7 @@ export function ProductGlimpses() {
     <section
       ref={ref}
       id="features"
+      tabIndex={-1}
       className="section-padding bg-white relative overflow-hidden"
     >
       {/* Subtle background pattern */}
@@ -70,7 +71,7 @@ export function ProductGlimpses() {
         >
           <span className="section-eyebrow">Product Glimpses</span>
           <h2 className="section-title">
-            A peek inside the experience
+            A peek inside the planned experience
           </h2>
         </motion.div>
 
