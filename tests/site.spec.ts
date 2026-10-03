@@ -5,7 +5,7 @@ test('unsubscribe deep link requires confirmation and survives reload',async({pa
   let posts=0;
   await page.route('**/api/unsubscribe?*',async route=>{posts++;expect(route.request().method()).toBe('POST');await route.fulfill({status:200,body:'Unsubscribed'});});
   await page.goto(path('unsubscribe?token=11111111-1111-4111-8111-111111111111'));
-  await expect(page.getByRole('heading',{name:'Unsubscribe from YummyFit newsletters'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Unsubscribe from YummyFit emails'})).toBeVisible();
   await page.reload();expect(posts).toBe(0);
   await page.getByRole('button',{name:'Unsubscribe',exact:true}).click();
   await expect(page.getByRole('heading',{name:'You’re unsubscribed'})).toBeVisible();expect(posts).toBe(1);

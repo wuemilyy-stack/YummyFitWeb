@@ -16,8 +16,8 @@ export function Unsubscribe() {
   }
   return <main className="container-custom max-w-xl py-16">
     <BrandLogo className="w-56 mb-8" />
-    <h1 className="text-3xl mb-5">{saved?'You’re unsubscribed':valid?'Unsubscribe from YummyFit newsletters':'Invalid unsubscribe link'}</h1>
-    <p className="mb-6">{saved?'You will no longer receive YummyFit newsletters. Your waitlist signup remains saved.':valid?'You can stop future newsletter emails. Your waitlist signup will remain saved.':'Please contact yummyfitsupport@gmail.com for help.'}</p>
+    <h1 className="text-3xl mb-5">{saved?'You’re unsubscribed':valid?'Unsubscribe from YummyFit emails':'Invalid unsubscribe link'}</h1>
+    <p className="mb-6">{saved?'You will no longer receive YummyFit newsletters or launch updates. Your waitlist signup remains saved.':valid?'You can stop future newsletters and launch updates. Your waitlist signup will remain saved.':'Please contact yummyfitsupport@gmail.com for help.'}</p>
     {valid&&!saved&&<button type="button" className="btn-primary" disabled={pending} onClick={unsubscribe}>{pending?'Updating…':'Unsubscribe'}</button>}
     {error&&<p role="alert" className="mt-4 text-red-700">{error}</p>}
     {saved&&<a className="btn-secondary" href={sitePath()}>Return to YummyFit</a>}

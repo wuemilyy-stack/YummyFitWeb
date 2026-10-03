@@ -6,6 +6,6 @@ export async function handleUnsubscribe(request,rpc) {
  if(!TOKEN.test(token||''))return page('Invalid unsubscribe link','<p>Please contact yummyfitsupport@gmail.com for help.</p>',400);
  if(request.method==='GET')return new Response(null,{status:302,headers:{...headers,Location:`https://wuemilyy-stack.github.io/YummyFitWeb/unsubscribe?token=${encodeURIComponent(token)}`}});
  if(request.method!=='POST')return page('Method not allowed','',405);
- try {await rpc('yummyfit_web_unsubscribe',{p_token:token});return page('You’re unsubscribed','<p>You will no longer receive YummyFit newsletters. Your waitlist signup remains saved.</p>');}
+ try {await rpc('yummyfit_web_unsubscribe',{p_token:token});return page('You’re unsubscribed','<p>You will no longer receive YummyFit newsletters or launch updates. Your waitlist signup remains saved.</p>');}
  catch{return page('Please try again','<p>We could not update your preference. Please try again or contact yummyfitsupport@gmail.com.</p>',503);}
 }

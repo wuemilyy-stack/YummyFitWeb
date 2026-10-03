@@ -9,6 +9,8 @@ test('welcome is addressed to the subscriber and remains transactional without m
   assert.ok(email.text.includes('does not purchase a membership'));
   assert.ok(!email.html.includes('<script>'));
   assert.ok(email.html.includes('&lt;script&gt;'));
+  assert.ok(email.html.includes('Unsubscribe from future newsletters and launch updates'));
+  assert.ok(email.text.includes('unsubscribe:'));
 });
 test('owner notification goes only to the requested support inbox', () => {
   const email = signupEmail({ ...signup, notification: true });

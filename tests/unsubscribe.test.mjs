@@ -5,10 +5,11 @@ import {signupEmail} from '../server/email-messages.mjs';
 const link='https://example.supabase.co/functions/v1/yummyfit-web-api/unsubscribe?token=11111111-1111-4111-8111-111111111111';
 test('newsletter email includes a working clause in HTML, plain text and mail headers',()=>{
  const message=signupEmail({kind:'newsletter',recipient:'test@example.com',unsubscribeUrl:link});
- assert.ok(message.text.includes(link));assert.ok(message.html.includes('Unsubscribe from future newsletter emails'));
+ assert.ok(message.text.includes(link));assert.ok(message.html.includes('Unsubscribe from future newsletters and launch updates'));
  assert.equal(message.headers['List-Unsubscribe'],`<${link}>`);
  assert.equal(message.headers['List-Unsubscribe-Post'],'List-Unsubscribe=One-Click');
- assert.equal(signupEmail({kind:'intake',recipient:'test@example.com'}).headers,undefined);
+ assert.equal(signupEmail({kind:'intake',recipient:'test@example.com',unsubscribeUrl:link}).headers['List-Unsubscribe'],`<${link}>`);
+ assert.equal(signupEmail({kind:'newsletter',recipient:'test@example.com',notification:true}).headers,undefined);
 });
 test('GET confirms without changing preferences; POST performs unsubscribe',async()=>{
  let calls=0;const rpc=async(name,args)=>{assert.equal(name,'yummyfit_web_unsubscribe');assert.ok(args.p_token);calls++;};
