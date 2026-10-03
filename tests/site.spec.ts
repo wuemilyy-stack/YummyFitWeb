@@ -9,6 +9,8 @@ test('all rendered internal links target existing sections or distinct pages', a
   for (const selector of ['#waitlist h2', 'label[for="waitlist-name"]', 'label[for="waitlist-email"]', '#waitlist legend']) {
     await expect(page.locator(selector)).toHaveCSS('color', 'rgb(255, 255, 255)');
   }
+  await expect(page.locator('#waitlist button[type="submit"]')).toHaveCSS('color', 'rgb(20, 61, 43)');
+  await expect(page.locator('#waitlist button[type="submit"]')).toHaveCSS('background-color', 'rgb(210, 243, 107)');
   await expect(page.getByRole('link', { name: 'Become a Founding Member', exact: true }).locator('..')).toHaveCSS('opacity', '1');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
   await page.screenshot({ path: testInfo.outputPath('homepage.png') });

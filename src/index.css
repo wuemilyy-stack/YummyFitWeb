@@ -160,3 +160,7 @@
     @apply bg-yummy-300 rounded-full hover:bg-yummy-400;
   }
 }
+
+/* Explicit section theme overrides the shared button utility palette. */
+#waitlist button[type='submit'] { background: #d2f36b; color: #143d2b; }
+#waitlist button[type='submit']:hover { background: #c4e553; }
