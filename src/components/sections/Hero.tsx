@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Shield, Users } from 'lucide-react';
 import { BrandMark } from '@/components/ui/Brand';
-import { waitlistPath } from '@/config/site';
+import { waitlistPath, sitePath } from '@/config/site';
 import { Navigation } from '@/components/ui/Navigation';
 
 export function Hero() {
@@ -131,6 +131,13 @@ export function Hero() {
             </div>
           </div>
         </motion.div>
+        <figure className="mt-10 max-w-5xl mx-auto overflow-hidden rounded-[28px] border border-yummy-200 bg-white">
+          <img src={sitePath('brand/vitality-campaign.png')} alt="Fresh avocado salad, citrus, a water bottle and workout essentials in natural sunlight" width={1672} height={941} loading="lazy" className="w-full h-48 sm:h-72 object-cover" />
+          <figcaption className="flex flex-wrap justify-between gap-2 px-6 py-4 text-brand-800">
+            <span className="font-display text-xl">A little more energy. Every day.</span>
+            <span className="text-sm self-center">Eat smart · Train better</span>
+          </figcaption>
+        </figure>
       </div>
     </section>
   );

@@ -6,6 +6,9 @@ test('all rendered internal links target existing sections or distinct pages', a
   page.on('pageerror', error => errors.push(error.message));
   await page.goto(path());
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  for (const selector of ['#waitlist h2', 'label[for="waitlist-name"]', 'label[for="waitlist-email"]', '#waitlist legend']) {
+    await expect(page.locator(selector)).toHaveCSS('color', 'rgb(255, 255, 255)');
+  }
   await expect(page.getByRole('link', { name: 'Become a Founding Member', exact: true }).locator('..')).toHaveCSS('opacity', '1');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
   await page.screenshot({ path: testInfo.outputPath('homepage.png') });

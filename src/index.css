@@ -22,7 +22,7 @@
 
   body {
     @apply bg-yummy-50 text-yummy-900 font-sans antialiased;
-    font-size: 13px;
+    font-size: 16px;
     line-height: 1.5;
   }
 
@@ -90,6 +90,19 @@
   .section-title {
     @apply text-2xl sm:text-3xl lg:text-4xl font-bold text-yummy-900 tracking-tight mb-3;
   }
+
+  h1, h2, .section-title { font-family: Georgia, serif; }
+  .btn-primary {
+    background: #d2f36b;
+    color: #143d2b;
+    border: 1px solid #143d2b;
+  }
+  .btn-primary:hover { background: #c4e553; }
+  #top { background: radial-gradient(ellipse at 80% 30%, #e4f1bf 0, transparent 52%), #fffdf5; }
+  #waitlist { background: #143d2b; }
+  #waitlist h2, #waitlist label, #waitlist legend { color: #fff; }
+  #waitlist [role='alert'] { color: #fecaca; }
+  #waitlist input:focus-visible, #waitlist select:focus-visible { outline: 3px solid #d2f36b; outline-offset: 3px; }
 
   .section-subtitle {
     @apply text-base text-yummy-600 leading-relaxed;

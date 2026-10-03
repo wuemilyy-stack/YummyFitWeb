@@ -9,29 +9,29 @@ export default {
       colors: {
         // YummyFit Prototype Green Palette
         yummy: {
-          50: '#f3f7f1',
-          100: '#e3eee7',
+          50: '#FFFDF5',
+          100: '#EAF0DF',
           200: '#cddbd3',
           300: '#a8c4b5',
           400: '#7a9f8e',
           500: '#527d6b',     // Medium green
           600: '#3d7752',     // Accent / progress
           700: '#28513d',     // Form accents
-          800: '#1b4332',     // Primary dark - headings, primary buttons
-          900: '#162b20',     // Dark text
+          800: '#143D2B',     // Primary dark - headings, primary buttons
+          900: '#102C21',     // Dark text
           950: '#0f2a1d',     // Very dark bg
         },
         brand: {
-          50: '#f3f7f1',
-          100: '#e3eee7',
+          50: '#FFFDF5',
+          100: '#EAF0DF',
           200: '#cddbd3',
           300: '#a8c4b5',
           400: '#7a9f8e',
           500: '#3d7752',     // Accent green
-          600: '#2f850f',     // Primary CTA - bright green
+          600: '#426443',     // Primary CTA - bright green
           700: '#28513d',     // Form accents
-          800: '#1b4332',     // Primary dark
-          900: '#162b20',
+          800: '#143D2B',     // Primary dark
+          900: '#102C21',
           950: '#0f2a1d',
         },
         dark: {
@@ -50,7 +50,7 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Georgia', 'serif'],
       },
       fontSize: {
         'base': ['13px', { lineHeight: '1.5' }],
@@ -59,9 +59,9 @@ export default {
         'eyebrow': ['10px', { lineHeight: '1.3', letterSpacing: '0.02em' }],
       },
       borderRadius: {
-        'btn': '6px',
-        'card': '8px',
-        'input': '5px',
+        'btn': '999px',
+        'card': '24px',
+        'input': '12px',
       },
       boxShadow: {
         'card': '0 1px 3px rgba(0,0,0,0.08)',
