@@ -26,6 +26,7 @@ test('Supabase SQL transaction, concurrency, consent, rate limit and private acc
     await pool.query(readFileSync(new URL('../supabase/migrations/20261003000100_yummyfit_web.sql', import.meta.url), 'utf8'));
     await pool.query(readFileSync(new URL('../supabase/migrations/20261003000200_optional_price.sql', import.meta.url), 'utf8'));
     await pool.query(readFileSync(new URL('../supabase/migrations/20261003000300_signup_email_outbox.sql', import.meta.url), 'utf8'));
+    await pool.query(readFileSync(new URL('../supabase/migrations/20261003000400_restore_optional_price.sql', import.meta.url), 'utf8'));
     const key = randomUUID();
     const receipts = await Promise.all(Array.from({ length: 8 }, () => capture(key)));
     assert.equal(new Set(receipts.map(result => result.id)).size, 1);

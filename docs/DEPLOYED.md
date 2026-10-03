@@ -16,3 +16,9 @@ The deployed website passed desktop/mobile checks for rendered links and fragmen
 The contact channel is the repository maintainer issue page. The UI requests private contact and tells visitors not to publish personal signup data. No working mailbox is claimed, and no confirmation email is promised or sent.
 
 Supabase GitHub integration was already enabled when the project became available. Initial schema setup was executed manually; the checked-in migration remains the source for future managed migration runs. Netlify was superseded by the requested Supabase/GitHub Pages deployment and was not deployed.
+
+## Gmail workflow deployment — October 3, 2026
+
+The private email outbox, Gmail worker and background dispatch are deployed. A one-minute cron job invokes the JWT-protected worker with a separate private token; both scheduling credentials are stored in Vault. Public API readiness returns 200. Live schema drift had removed price_range, so migration 004 restored it as nullable to keep the capture RPC working without restoring the form question.
+
+The delivery test created two jobs addressed to yummyfitsupport@gmail.com: a subscriber welcome and a support notification. Gmail authentication returned EAUTH / 535. Neither email was delivered; the jobs remain eligible for retry. Replace GMAIL_APP_PASSWORD with an app password for that exact Gmail account, verify the protected ?check=smtp endpoint, then inspect queue sent status and the inbox before claiming email delivery is enabled.
