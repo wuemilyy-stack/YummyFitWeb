@@ -26,6 +26,10 @@
     line-height: 1.5;
   }
 
+  h1, h2, h3, h4, h5, h6, summary, th {
+    text-transform: capitalize;
+  }
+
   ::selection {
     @apply bg-brand-600/30 text-yummy-900;
   }
@@ -110,7 +114,7 @@
 
   .section-eyebrow {
     @apply inline-block px-3 py-1 rounded-full bg-yummy-100 text-brand-800 
-           text-eyebrow font-semibold mb-3 uppercase tracking-wider;
+           text-eyebrow font-semibold mb-3 capitalize tracking-wider;
   }
 
   .input-field {

@@ -45,7 +45,7 @@ export function Waitlist() {
               <span>Send me optional launch news and product updates.</span></label>
           </fieldset>
           {error && <p role="alert" className="text-red-200">{error}</p>}
-          <Button type="submit" loading={pending} className="w-full bg-white text-brand-800 hover:bg-yummy-100">Join the Waitlist <ArrowRight className="w-4 h-4" /></Button>
+          <Button type="submit" loading={pending} icon={<ArrowRight className="w-4 h-4" aria-hidden="true" />} iconPosition="right" className="w-full bg-white text-brand-800 hover:bg-yummy-100">Join the Waitlist</Button>
           <p className="text-sm text-white/80">By joining, you accept our <a className="underline" href={sitePath('terms')}>Terms</a>.
             Read our <a className="underline" href={sitePath('privacy')}>Privacy Policy</a> for how we handle signup data.</p>
         </form>
