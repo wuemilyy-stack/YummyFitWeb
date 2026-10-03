@@ -35,7 +35,17 @@ test('every conversion CTA reaches the waitlist and carries the selected plan', 
     await locator.click();
     await expect(page).toHaveURL(new RegExp('#waitlist$'));
     await expect(page.getByRole('combobox', { name: 'Membership interest' })).toHaveValue(plan);
+    await expect(page.getByRole('heading', { name: 'Join the YummyFit waitlist', exact: true })).toBeInViewport();
   }
+});
+
+test('founding deep link and reload reveal the form with founding selected', async ({ page }) => {
+  await page.goto(path('?plan=founding#waitlist'));
+  await expect(page.getByRole('combobox', { name: 'Membership interest' })).toHaveValue('founding');
+  await expect(page.getByRole('heading', { name: 'Join the YummyFit waitlist', exact: true })).toBeInViewport();
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'Join the YummyFit waitlist', exact: true })).toBeInViewport();
+  await expect(page.getByRole('combobox', { name: 'Membership interest' })).toHaveValue('founding');
 });
 test('navigation works at the current breakpoint and updates the URL hash', async ({ page }) => {
   await page.goto(path());

@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { useSignup } from '@/hooks/useSignup';
 import { Button } from '@/components/ui/Button';
+import { BrandLogo } from '@/components/ui/Brand';
 import { legalLinks, navLinks, site, sitePath } from '@/config/site';
 export function Footer() {
   const [email, setEmail] = useState('');
@@ -18,7 +19,7 @@ export function Footer() {
   return <footer id="contact" tabIndex={-1} className="bg-yummy-950 text-white">
     <div className="container-custom py-12">
       <div className="grid md:grid-cols-3 gap-8 mb-10">
-        <div><h2 className="font-bold text-xl mb-3">YummyFit</h2><p className="text-yummy-200">Fitness and nutrition, connected. Currently preparing for launch.</p>
+        <div><BrandLogo className="h-12 w-auto rounded-lg mb-3" /><p className="text-yummy-200">Fitness and nutrition, connected. Currently preparing for launch.</p>
           <div className="flex flex-wrap gap-4 mt-4">{site.socials.map(link => <a key={link.label} href={link.href} className="underline">{link.label}</a>)}</div>
         </div>
         <nav aria-label="Footer navigation" className="flex flex-col gap-3">{navLinks.map(link => <a key={link.href} href={sitePath(link.href)}>{link.label}</a>)}

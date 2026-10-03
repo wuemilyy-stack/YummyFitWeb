@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Zap, Shield, Users } from 'lucide-react';
+import { ArrowRight, Shield, Users } from 'lucide-react';
+import { BrandMark } from '@/components/ui/Brand';
 import { waitlistPath } from '@/config/site';
 import { Navigation } from '@/components/ui/Navigation';
 
@@ -48,7 +49,7 @@ export function Hero() {
               Expert-built
             </span>
             <span className="flex items-center gap-1.5 text-sm text-yummy-600">
-              <Zap className="w-4 h-4 text-brand-600" />
+              <BrandMark className="w-4 h-4" />
               Early access
             </span>
           </motion.div>
@@ -125,8 +126,8 @@ export function Hero() {
             />
             
             {/* Hub */}
-            <div className="relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-gradient-to-br from-brand-600 to-brand-700 flex items-center justify-center shadow-lg shadow-brand-600/30">
-              <Zap className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
+            <div className="relative z-10 w-20 h-20 sm:w-24 sm:h-24 shadow-lg shadow-brand-600/30 rounded-[32%]">
+              <BrandMark className="w-full h-full" />
             </div>
           </div>
         </motion.div>

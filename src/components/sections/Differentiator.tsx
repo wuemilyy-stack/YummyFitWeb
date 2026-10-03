@@ -1,4 +1,6 @@
 import { motion } from 'framer-motion';
+import type { ReactNode } from 'react';
+import { BrandMark } from '@/components/ui/Brand';
 import { Check, X, Sparkles } from 'lucide-react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { cn } from '@/utils/helpers';
@@ -163,7 +165,7 @@ export function Differentiator() {
             description="Workouts inform meals, meals generate grocery lists, coaches see it all"
           />
           <HighlightCard
-            icon="⚡"
+            icon={<BrandMark className="w-7 h-7" />}
             title="Real-Time Sync"
             description="Change a workout, your meal plan and grocery list update instantly"
           />
@@ -178,7 +180,7 @@ export function Differentiator() {
   );
 }
 
-function HighlightCard({ icon, title, description }: { icon: string; title: string; description: string }) {
+function HighlightCard({ icon, title, description }: { icon: ReactNode; title: string; description: string }) {
   return (
     <motion.div
       className="p-5 rounded-card bg-white border border-yummy-200 hover:border-brand-300 hover:shadow-card-hover transition-all duration-300"

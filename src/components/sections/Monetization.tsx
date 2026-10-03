@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { Check, Crown, Sparkles, Gift, Zap } from 'lucide-react';
+import { Check, Crown, Sparkles, Gift } from 'lucide-react';
+import { BrandMark } from '@/components/ui/Brand';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { waitlistPath } from '@/config/site';
 import type { Plan } from '../../../shared/contracts';
@@ -47,7 +48,7 @@ const plans = [
     highlight: true,
     color: 'brand-600',
     bgColor: 'yummy-100',
-    icon: Zap,
+    icon: BrandMark,
     badge: 'Most Popular',
   },
   {

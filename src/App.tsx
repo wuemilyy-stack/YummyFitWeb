@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { useLayoutEffect } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { Hero } from '@/components/sections/Hero';
 import { Problem } from '@/components/sections/Problem';
@@ -21,9 +22,21 @@ function NotFound() {
   return <main className="container-custom py-24"><h1 className="text-4xl font-bold">Page not found</h1>
     <p className="my-5">The page you requested is unavailable.</p><a href={sitePath()} className="btn-primary">Return to YummyFit</a></main>;
 }
+function HashNavigation() {
+  const { pathname, search, hash } = useLocation();
+  useLayoutEffect(() => {
+    if (!hash) return;
+    const target = document.getElementById(hash.slice(1));
+    if (!target) return;
+    // A fresh query-string navigation can arrive before React creates the hash target.
+    target.scrollIntoView({ behavior: 'instant', block: 'start' });
+    target.focus({ preventScroll: true });
+  }, [pathname, search, hash]);
+  return null;
+}
 function App() {
   return <MotionConfig reducedMotion="user"><BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '') || '/'}>
-    <Routes><Route path="/" element={<Home />} /><Route path="/privacy" element={<Legal page="privacy" />} />
+    <HashNavigation /><Routes><Route path="/" element={<Home />} /><Route path="/privacy" element={<Legal page="privacy" />} />
       <Route path="/terms" element={<Legal page="terms" />} /><Route path="/cookies" element={<Legal page="cookies" />} />
       <Route path="*" element={<NotFound />} /></Routes>
   </BrowserRouter></MotionConfig>;
