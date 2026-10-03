@@ -26,4 +26,4 @@ The PostgreSQL integration test runs only with `TEST_DATABASE_URL` pointing to a
 
 Supply a working operator contact address and review the initial legal policies; build with the chosen public configuration. Configure/migrate a persistent production database and test its actual connection. Set the site base consistently for build/runtime. No email delivery is implemented or promised. Multi-instance deployments require a shared gateway/store rate limiter. See DEPLOYMENT.md for operating details.
 
-The review fixes were pushed to `codex/reliability-fixes`. Supabase/GitHub Pages deployment configuration is documented separately in SUPABASE-PAGES.md; publication requires the target project and public contact configuration.
+The fixes are pushed to master and `codex/reliability-fixes`, and the Supabase/GitHub Pages app is live. See DEPLOYED.md for URLs and verified deployment evidence; SUPABASE-PAGES.md describes the hosted architecture.
